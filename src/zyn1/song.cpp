@@ -22,6 +22,7 @@
 #include <minimal/project.h>
 #include <minimal/lfo.h>
 #include <minimal/note_line.h>
+#include <minimal/audio_sink.h>
 
 using namespace mini;
 using namespace bars;
@@ -38,7 +39,7 @@ void init(project_t& p)
 	// instruments
 	// TODO: disallow "zynaddsubfx sine_base ...."
 	zyn_tree_t& sine_bass = p.emplace<zynaddsubfx_t>("sine bass");
-	jack_player_t& player = p.emplace<jack_player_t>();
+	audio_sink_t& sink = p.add_sink();
 
 	//sine_bass.add_param_fixed("/bla", 1, std::string("zwei"));
 
@@ -70,11 +71,13 @@ void init(project_t& p)
 	nl.add_notes(maj, note_geom_t(6_1, 68));
 	nl.add_notes(maj, note_geom_t(7_1, 69));
 
-//	lfo_t<int>& m_lfo = p.emplace<lfo_t<int>>(0.0, 64.0, 0.0, 8.);
-
-	lfo_t<int>& constant_0 = p.emplace<lfo_t<int>>(0.0, 0.0, std::numeric_limits<int>::max(), std::numeric_limits<int>::max(), 1.0f, 0.0f);
-	lfo_t<int>& constant_1 = p.emplace<lfo_t<int>>(0.0, 0.0, std::numeric_limits<int>::max(), std::numeric_limits<int>::max(), 1.0f, 1.0f);
-	lfo_t<int>& constant_m2 = p.emplace<lfo_t<int>>(0.0, 0.0, std::numeric_limits<int>::max(), std::numeric_limits<int>::max(), 1.0f, -2.0f);
+//	lfo_t<int>& lfo_startup = p.emplace<lfo_t<int>>(0.0, 64.0, 100_1, 100_1, 0.5); // 1x 0 -> 64.0
+	lfo_t<int>& lfo_leftright = p.emplace<lfo_t<int>>(-64.0, 64.0, 0_1, 8_1, 8.); // 4x from 0 to 8
+	lfo_t<int>& lfo_volume = p.emplace<lfo_t<int>>(20, 80.0, 0_1, 8_1); // 1x 20 -> 80
+	
+//	lfo_t<int>& constant_0 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, 0.0f);
+	lfo_t<int>& constant_1 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, 1.0f); // TODO: 100_1
+	lfo_t<int>& constant_m2 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, -2.0f);
 
 //	in_port<int> ip(sine_bass);
 //	ip.connect(m_lfo->out);
@@ -87,8 +90,11 @@ void init(project_t& p)
 	auto& ins_fx_part = sine_bass.part<0>().partefx<0>().eff0_part_id<in_port_templ<int>>();
 
 	// effect connections
-	volume.cmd_ptr->port_at<0>() << _constant<int, 0>();
-	panning.cmd_ptr->port_at<0>() << constant_0;
+//	volume.cmd_ptr->port_at<0>() << _constant<int, 0>();
+	
+	// TODO: make cast if port_at is obvious (e.g. only 1 port)
+	volume.cmd_ptr->port_at<0>() << lfo_volume;
+	panning.cmd_ptr->port_at<0>() << lfo_leftright; //constant_0;
 	ins_fx_part.cmd_ptr->port_at<0>() << constant_m2; // -2 is global
 	ins_fx_i.cmd_ptr->port_at<0>() << constant_1;
 
@@ -96,7 +102,7 @@ void init(project_t& p)
 
 	sine_bass.print_all_used(no_rt::mlog);
 
-	player << sine_bass;
+	sink << sine_bass;
 
 	// PEnable
 	// "part0/kit0/adpars/voice0/AmpEnvelope/Penvsustain:i"
