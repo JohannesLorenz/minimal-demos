@@ -84,10 +84,10 @@ void init(project_t& p)
 
 	//zyn::p_envsustain<in_port_templ<int>>* envsustain = sine_bass.add0().global().amp_env().envsustain<in_port_templ<int>>(); // todo: need discretizer
 	auto& volume = sine_bass.volume<in_port_templ<int>>();
-	auto& panning = sine_bass.part0().Ppanning<in_port_templ<int>>();
-	auto& ins_fx_i = sine_bass.insefx<>().efftype<in_port_templ<int>>();
+	auto& panning = sine_bass.part0->Ppanning<in_port_templ<int>>();
+	auto& ins_fx_i = sine_bass.insefx0->efftype<in_port_templ<int>>();
 		//sine_bass.part<0>().partefx<0>().efftype<in_port_templ<int>>();
-	auto& ins_fx_part = sine_bass.part<0>().partefx<0>().eff0_part_id<in_port_templ<int>>();
+	auto& ins_fx_part = sine_bass.part0->partefx->eff0_part_id<in_port_templ<int>>();
 
 	// effect connections
 //	volume.cmd_ptr->port_at<0>() << _constant<int, 0>();
@@ -100,9 +100,10 @@ void init(project_t& p)
 
 	sine_bass.note_input() << nl;
 
-	sine_bass.print_all_used(no_rt::mlog);
+	//sine_bass.print_all_used(no_rt::mlog);
 
 	sink << sine_bass;
+	sine_bass.print_tree();
 
 	// PEnable
 	// "part0/kit0/adpars/voice0/AmpEnvelope/Penvsustain:i"
@@ -110,6 +111,7 @@ void init(project_t& p)
 /*	const auto ftor = [](int c) { return c % 100 + 50; };
 	func<decltype(ftor), p_char, int> f(ftor);
 	zynaddsubfx_t::note_on cmd(f, 2, 3);*/
+
 }
 
 }

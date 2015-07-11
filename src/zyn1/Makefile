@@ -5,10 +5,11 @@ FLAGS=-Wall -Wextra -Werror
 CC=clang++
 SRC=song.cpp
 OUTFILE=song
+MODULES=minimal-zynaddsubfx
 
 # flags you should not customize
-FIXED_CFLAGS=-fPIC `pkg-config --cflags minimal minimal-zynaddsubfx`
-FIXED_LFLAGS=-shared `pkg-config --libs minimal minimal-zynaddsubfx`
+FIXED_CFLAGS=-fPIC `pkg-config --cflags minimal ${MODULES}`
+FIXED_LFLAGS=-shared `pkg-config --libs minimal ${MODULES}`
 FIXED_FLAGS=-std=c++11
 OBJ=$(SRC:%.cpp=%.cpp.o)
 
