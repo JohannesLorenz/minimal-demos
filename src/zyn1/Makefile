@@ -1,7 +1,7 @@
 # flags you can customize
 CFLAGS=-g -pipe
 LFLAGS=
-FLAGS=-Wall -Wextra -Werror
+FLAGS=-Wall -Wextra
 CC=clang++
 SRC=song.cpp
 OUTFILE=song

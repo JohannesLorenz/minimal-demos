@@ -23,9 +23,11 @@
 #include <minimal/lfo.h>
 #include <minimal/note_line.h>
 #include <minimal/audio_sink.h>
+#include <iostream>
 
 using namespace mini;
 using namespace bars;
+using namespace scales;
 
 extern "C"
 {
@@ -38,7 +40,7 @@ void init(project_t& p)
 
 	// instruments
 	// TODO: disallow "zynaddsubfx sine_base ...."
-	zyn_tree_t& sine_bass = p.emplace<zynaddsubfx_t>("sine bass");
+	zynaddsubfx_t& sine_bass = p.emplace<zynaddsubfx_t>("sine bass");
 	audio_sink_t& sink = p.add_sink();
 
 	//sine_bass.add_param_fixed("/bla", 1, std::string("zwei"));
@@ -56,20 +58,20 @@ void init(project_t& p)
 	using namespace daw;
 
 	notes_t maj(note_geom_t(0_1, 0));
-	maj.add_note(note_t(), note_geom_t(0_1, 0));
-	maj.add_note(note_t(), note_geom_t(1_3, 1));
-	maj.add_note(note_t(), note_geom_t(2_3, 2));
+	maj.add_note(note_t(), note_geom_t(0_1, c));
+	maj.add_note(note_t(), note_geom_t(1_6, e));
+	maj.add_note(note_t(), note_geom_t(2_6, g));
 
 	// 8 major chords
 	note_line_t& nl = p.emplace<note_line_t>();
-	nl.add_notes(maj, note_geom_t(0_1, 62));
-	nl.add_notes(maj, note_geom_t(1_1, 63));
-	nl.add_notes(maj, note_geom_t(2_1, 64));
-	nl.add_notes(maj, note_geom_t(3_1, 65));
-	nl.add_notes(maj, note_geom_t(4_1, 66));
-	nl.add_notes(maj, note_geom_t(5_1, 67));
-	nl.add_notes(maj, note_geom_t(6_1, 68));
-	nl.add_notes(maj, note_geom_t(7_1, 69));
+	nl.add_notes(maj, note_geom_t(0_2, c^5));
+	nl.add_notes(maj, note_geom_t(1_2, d^5));
+	nl.add_notes(maj, note_geom_t(2_2, e^5));
+	nl.add_notes(maj, note_geom_t(3_2, f^5));
+	nl.add_notes(maj, note_geom_t(4_2, g^5));
+	nl.add_notes(maj, note_geom_t(5_2, a^5));
+	nl.add_notes(maj, note_geom_t(6_2, b^5));
+	nl.add_notes(maj, note_geom_t(7_2, c^6));
 
 //	lfo_t<int>& lfo_startup = p.emplace<lfo_t<int>>(0.0, 64.0, 100_1, 100_1, 0.5); // 1x 0 -> 64.0
 	lfo_t<int>& lfo_leftright = p.emplace<lfo_t<int>>(-64.0, 64.0, 0_1, 8_1, 8.); // 4x from 0 to 8
