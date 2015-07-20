@@ -75,7 +75,7 @@ void init(project_t& p)
 
 //	lfo_t<int>& lfo_startup = p.emplace<lfo_t<int>>(0.0, 64.0, 100_1, 100_1, 0.5); // 1x 0 -> 64.0
 	lfo_t<int>& lfo_leftright = p.emplace<lfo_t<int>>(-64.0, 64.0, 0_1, 8_1, 8.); // 4x from 0 to 8
-	lfo_t<int>& lfo_volume = p.emplace<lfo_t<int>>(20, 80.0, 0_1, 8_1); // 1x 20 -> 80
+	lfo_t<int>& lfo_volume = p.emplace<lfo_t<int>>(0, 85.0, 0_1, 4_1); // 1x 0 -> 85
 	
 //	lfo_t<int>& constant_0 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, 0.0f);
 	lfo_t<int>& constant_1 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, 1.0f); // TODO: 100_1
@@ -85,20 +85,20 @@ void init(project_t& p)
 //	ip.connect(m_lfo->out);
 
 	//zyn::p_envsustain<in_port_templ<int>>* envsustain = sine_bass.add0().global().amp_env().envsustain<in_port_templ<int>>(); // todo: need discretizer
-	auto& volume = sine_bass.volume<in_port_templ<int>>();
+	auto& volume = sine_bass.volume;
 	auto& panning = sine_bass.part0->Ppanning<in_port_templ<int>>();
-	auto& ins_fx_i = sine_bass.insefx0->efftype<in_port_templ<int>>();
+//	auto& ins_fx_i = sine_bass.insefx0->efftype;
 		//sine_bass.part<0>().partefx<0>().efftype<in_port_templ<int>>();
-	auto& ins_fx_part = sine_bass.part0->partefx->eff0_part_id<in_port_templ<int>>();
+//	auto& ins_fx_part = sine_bass.part0->partefx->eff0_part_id<in_port_templ<int>>();
 
 	// effect connections
 //	volume.cmd_ptr->port_at<0>() << _constant<int, 0>();
 	
 	// TODO: make cast if port_at is obvious (e.g. only 1 port)
-	volume.cmd_ptr->port_at<0>() << lfo_volume;
+	volume->cmd_ptr->port_at<0>() << lfo_volume;
 	panning.cmd_ptr->port_at<0>() << lfo_leftright; //constant_0;
-	ins_fx_part.cmd_ptr->port_at<0>() << constant_m2; // -2 is global
-	ins_fx_i.cmd_ptr->port_at<0>() << constant_1;
+//	ins_fx_part.cmd_ptr->port_at<0>() << constant_m2; // -2 is global
+//	ins_fx_i->cmd_ptr->port_at<0>() << constant_1;
 
 	sine_bass.note_input() << nl;
 
