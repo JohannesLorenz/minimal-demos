@@ -21,8 +21,9 @@
 #include <minimal/jack_player.h>
 #include <minimal/project.h>
 #include <minimal/lfo.h>
-#include <minimal/note_line.h>
+//#include <minimal/note_line.h>
 #include <minimal/audio_sink.h>
+#include <minimal/notes.h>
 #include <iostream>
 
 using namespace mini;
@@ -63,7 +64,7 @@ void init(project_t& p)
 	maj.add_note(note_t(), note_geom_t(2_6, g));
 
 	// 8 major chords
-	note_line_t& nl = p.emplace<note_line_t>();
+	note_line_t& nl = p.emplace<event_line_t>();
 	nl.add_notes(maj, note_geom_t(0_2, c^5));
 	nl.add_notes(maj, note_geom_t(1_2, d^5));
 	nl.add_notes(maj, note_geom_t(2_2, e^5));
