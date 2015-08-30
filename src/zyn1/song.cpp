@@ -101,7 +101,7 @@ void init(project_t& p)
 
 	//zyn::p_envsustain<in_port_templ<int>>* envsustain = sine_bass.add0().global().amp_env().envsustain<in_port_templ<int>>(); // todo: need discretizer
 	auto& volume = sine_bass.volume;
-	auto& panning = sine_bass.part0->Ppanning<in_port_templ<int>>();
+	auto& panning = sine_bass.part[0].Ppanning;
 //	auto& ins_fx_i = sine_bass.insefx0->efftype;
 		//sine_bass.part<0>().partefx<0>().efftype<in_port_templ<int>>();
 //	auto& ins_fx_part = sine_bass.part0->partefx->eff0_part_id<in_port_templ<int>>();
@@ -111,7 +111,7 @@ void init(project_t& p)
 	
 	// TODO: make cast if port_at is obvious (e.g. only 1 port)
 	volume->cmd_ptr->port_at<0>() << lfo_volume;
-	panning.cmd_ptr->port_at<0>() << lfo_leftright; //constant_0;
+	panning->cmd_ptr->port_at<0>() << lfo_leftright; //constant_0;
 //	ins_fx_part.cmd_ptr->port_at<0>() << constant_m2; // -2 is global
 //	ins_fx_i->cmd_ptr->port_at<0>() << constant_1;
 
