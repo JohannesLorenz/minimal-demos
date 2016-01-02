@@ -65,14 +65,28 @@ void init(project_t& p)
 
 	// 8 major chords
 	note_line_t& nl = p.emplace<note_line_t>();
-	nl.add_notes(maj, note_geom_t(0_2, c^5));
-	nl.add_notes(maj, note_geom_t(1_2, d^5));
-	nl.add_notes(maj, note_geom_t(2_2, e^5));
-	nl.add_notes(maj, note_geom_t(3_2, f^5));
-	nl.add_notes(maj, note_geom_t(4_2, g^5));
-	nl.add_notes(maj, note_geom_t(5_2, a^5));
-	nl.add_notes(maj, note_geom_t(6_2, b^5));
-	nl.add_notes(maj, note_geom_t(7_2, c^6));
+	notes_t nts;
+/*	nts.add_notes(maj, note_geom_t(0_2, c^5));
+	nts.add_notes(maj, note_geom_t(1_2, d^5));
+	nts.add_notes(maj, note_geom_t(2_2, e^5));
+	nts.add_notes(maj, note_geom_t(3_2, f^5));
+	nts.add_notes(maj, note_geom_t(4_2, g^5));
+	nts.add_notes(maj, note_geom_t(5_2, a^5));
+	nts.add_notes(maj, note_geom_t(6_2, b^5));
+	nts.add_notes(maj, note_geom_t(7_2, c^6));*/
+	
+	notes_t maj2 = 1_2 * maj;
+
+	nts << maj2 + c%5
+		<< maj2 + d%5
+		<< maj2 + e%5
+		<< maj2 + f%5
+		<< maj2 + g%5
+		<< maj2 + a%5
+		<< maj2 + b%5
+		<< maj2 + c%6;
+	
+	nl.add_notes(nts, note_geom_t(0_1, 0));
 
 //	lfo_t<int>& lfo_startup = p.emplace<lfo_t<int>>(0.0, 64.0, 100_1, 100_1, 0.5); // 1x 0 -> 64.0
 	lfo_t<int>& lfo_leftright = p.emplace<lfo_t<int>>(-64.0, 64.0, 0_1, 8_1, 8.); // 4x from 0 to 8
@@ -87,7 +101,7 @@ void init(project_t& p)
 
 	//zyn::p_envsustain<in_port_templ<int>>* envsustain = sine_bass.add0().global().amp_env().envsustain<in_port_templ<int>>(); // todo: need discretizer
 	auto& volume = sine_bass.volume;
-	auto& panning = sine_bass.part0->Ppanning<in_port_templ<int>>();
+	auto& panning = sine_bass.part[0].Ppanning;
 //	auto& ins_fx_i = sine_bass.insefx0->efftype;
 		//sine_bass.part<0>().partefx<0>().efftype<in_port_templ<int>>();
 //	auto& ins_fx_part = sine_bass.part0->partefx->eff0_part_id<in_port_templ<int>>();
@@ -97,7 +111,7 @@ void init(project_t& p)
 	
 	// TODO: make cast if port_at is obvious (e.g. only 1 port)
 	volume->cmd_ptr->port_at<0>() << lfo_volume;
-	panning.cmd_ptr->port_at<0>() << lfo_leftright; //constant_0;
+	panning->cmd_ptr->port_at<0>() << lfo_leftright; //constant_0;
 //	ins_fx_part.cmd_ptr->port_at<0>() << constant_m2; // -2 is global
 //	ins_fx_i->cmd_ptr->port_at<0>() << constant_1;
 
