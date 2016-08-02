@@ -21,6 +21,7 @@
 #include <minimal/jack_player.h>
 #include <minimal/project.h>
 #include <minimal/lfo.h>
+#include <minimal/protocol.h>
 //#include <minimal/note_line.h>
 #include <minimal/audio_sink.h>
 #include <minimal/notes.h>
@@ -119,7 +120,12 @@ void init(project_t& p)
 
 	//sine_bass.print_all_used(no_rt::mlog);
 
-	*p.sink << sine_bass;
+	
+	protocol_t<m_ringbuffer_t>& proto = p.emplace<protocol_t<m_ringbuffer_t>>();
+	
+	proto.input << sine_bass;
+	
+	*p.sink << proto; // << sine_bass; // TODO: allow that
 	sine_bass.print_tree();
 
 	// PEnable
