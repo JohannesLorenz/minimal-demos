@@ -1,5 +1,5 @@
 # flags you can customize
-CFLAGS=-g -pipe
+CFLAGS=-g -ggdb -pipe
 LFLAGS=
 FLAGS=-Wall -Wextra
 CC=clang++
