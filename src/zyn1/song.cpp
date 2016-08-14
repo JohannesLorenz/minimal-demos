@@ -25,6 +25,7 @@
 //#include <minimal/note_line.h>
 #include <minimal/audio_sink.h>
 #include <minimal/notes.h>
+#include <minimal/note_line.h>
 #include <iostream>
 
 using namespace mini;
@@ -65,7 +66,7 @@ void init(project_t& p)
 	maj.add_note(note_t(), note_geom_t(2_6, g));
 
 	// 8 major chords
-	note_line_t& nl = p.emplace<note_line_t>();
+	note_line_t& nl = p.emplace<note_line_t>("chords");
 	notes_t nts;
 /*	nts.add_notes(maj, note_geom_t(0_2, c^5));
 	nts.add_notes(maj, note_geom_t(1_2, d^5));
@@ -88,6 +89,9 @@ void init(project_t& p)
 		<< maj2 + c%6;
 	
 	nl.add_notes(nts, note_geom_t(0_1, 0));
+	
+	//std::cerr << "NOTELINE:" << std::endl << nl << std::endl;
+	nl.dump();
 
 //	lfo_t<int>& lfo_startup = p.emplace<lfo_t<int>>(0.0, 64.0, 100_1, 100_1, 0.5); // 1x 0 -> 64.0
 	lfo_t<int>& lfo_leftright = p.emplace<lfo_t<int>>(-64.0, 64.0, 0_1, 8_1, 8.); // 4x from 0 to 8
@@ -116,9 +120,9 @@ void init(project_t& p)
 //	ins_fx_part.cmd_ptr->port_at<0>() << constant_m2; // -2 is global
 //	ins_fx_i->cmd_ptr->port_at<0>() << constant_1;
 
-    protocol_t<note_signal_t>& nproto = p.emplace<protocol_t<note_signal_t>>(false, 1_2);
-    nproto.input << nl;
-    sine_bass.note_input() << nl;
+	protocol_t<note_signal_t>& nproto = p.emplace<protocol_t<note_signal_t>>(false, 1_2);
+	nproto.input << nl;
+	sine_bass.note_input() << nproto;
     
 //	sine_bass.note_input() << nl;
 
