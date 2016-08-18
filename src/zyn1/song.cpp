@@ -119,13 +119,15 @@ void init(project_t& p)
 	panning->cmd_ptr->port_at<0>() << lfo_leftright; //constant_0;
 //	ins_fx_part.cmd_ptr->port_at<0>() << constant_m2; // -2 is global
 //	ins_fx_i->cmd_ptr->port_at<0>() << constant_1;
-
+	
+	
+#if 0
 	protocol_t<note_signal_t>& nproto = p.emplace<protocol_t<note_signal_t>>(false, 1_2);
 	nproto.input << nl;
 	sine_bass.note_input() << nproto;
-    
-//	sine_bass.note_input() << nl;
-
+#else
+	sine_bass.note_input() << nl;
+#endif
 	//sine_bass.print_all_used(no_rt::mlog);
 
 	
