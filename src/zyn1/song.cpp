@@ -1,6 +1,6 @@
 /*************************************************************************/
 /* demo.cpp - a small demo song for minimal                              */
-/* Copyright (C) 2014-2015                                               */
+/* Copyright (C) 2014-2016                                               */
 /* Johannes Lorenz (jlsf2013 @ sourceforge)                              */
 /*                                                                       */
 /* This program is free software; you can redistribute it and/or modify  */
@@ -17,16 +17,12 @@
 /* Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA  */
 /*************************************************************************/
 
-#include <minimal/minimal.h> // TODO: rename!! minimal-zynaddsubfx.h
-#include <minimal/jack_player.h>
+#include <minimal/minimal-zynaddsubfx.h>
 #include <minimal/project.h>
 #include <minimal/lfo.h>
 #include <minimal/audio_protocol.h>
-//#include <minimal/note_line.h>
 #include <minimal/audio_sink.h>
 #include <minimal/notes.h>
-#include <minimal/note_line.h>
-#include <iostream>
 
 using namespace mini;
 using namespace bars;
@@ -60,13 +56,16 @@ void init(project_t& p)
 
 	using namespace daw;
 
-	notes_t maj(note_geom_t(0_1, 0));
+/*	notes_t maj(note_geom_t(0_1, 0));
 	maj.add_note(note_t(), note_geom_t(0_1, c));
 	maj.add_note(note_t(), note_geom_t(1_6, e));
-	maj.add_note(note_t(), note_geom_t(2_6, g));
+	maj.add_note(note_t(), note_geom_t(2_6, g));*/
+    notes_t maj;
+    maj << scale(1_6) << c << e << g;
+
 
 	// 8 major chords
-	note_line_t& nl = p.emplace<note_line_t>("chords");
+	piano_roll_t& nl = p.emplace<piano_roll_t>("chords");
 	notes_t nts;
 /*	nts.add_notes(maj, note_geom_t(0_2, c^5));
 	nts.add_notes(maj, note_geom_t(1_2, d^5));
@@ -77,16 +76,18 @@ void init(project_t& p)
 	nts.add_notes(maj, note_geom_t(6_2, b^5));
 	nts.add_notes(maj, note_geom_t(7_2, c^6));*/
 	
-	notes_t maj2 = 1_2 * maj;
+	notes_t maj2 = /*1_6 **/ maj;
 
-	nts << maj2 + c%5
+/*	nts << maj2 + c%5
 		<< maj2 + d%5
-		<< maj2 + e%5
+		<< maj2 + e%5-
 		<< maj2 + f%5
 		<< maj2 + g%5
 		<< maj2 + a%5
 		<< maj2 + b%5
-		<< maj2 + c%6;
+		<< maj2 + c%6;*/
+    nts << scale(1_4) << c%5 << c%5 << g%5 << g%5 << a%5 << a%5 << scale(1_2) << g%5
+        << scale(1_4) << f%5 << f%5 << e%5 << e%5 << d%5 << d%5 << scale(1_2) << c%5; 
 	
 	nl.add_notes(nts, note_geom_t(0_1, 0));
 	
@@ -104,12 +105,12 @@ void init(project_t& p)
 //	in_port<int> ip(sine_bass);
 //	ip.connect(m_lfo->out);
 
-	//zyn::p_envsustain<in_port_templ<int>>* envsustain = sine_bass.add0().global().amp_env().envsustain<in_port_templ<int>>(); // todo: need discretizer
+	//zyn::p_envsustain<in_port_t<int>>* envsustain = sine_bass.add0().global().amp_env().envsustain<in_port_t<int>>(); // todo: need discretizer
 	auto& volume = sine_bass.volume;
 	auto& panning = sine_bass.part[0].Ppanning;
 //	auto& ins_fx_i = sine_bass.insefx0->efftype;
-		//sine_bass.part<0>().partefx<0>().efftype<in_port_templ<int>>();
-//	auto& ins_fx_part = sine_bass.part0->partefx->eff0_part_id<in_port_templ<int>>();
+		//sine_bass.part<0>().partefx<0>().efftype<in_port_t<int>>();
+//	auto& ins_fx_part = sine_bass.part0->partefx->eff0_part_id<in_port_t<int>>();
 
 	// effect connections
 //	volume.cmd_ptr->port_at<0>() << _constant<int, 0>();
@@ -121,7 +122,7 @@ void init(project_t& p)
 //	ins_fx_i->cmd_ptr->port_at<0>() << constant_1;
 	
 	
-#if 0
+#if 1
 	protocol_t<note_signal_t>& nproto = p.emplace<protocol_t<note_signal_t>>(false, 1_2);
 	nproto.input << nl;
 	sine_bass.note_input() << nproto;
@@ -130,12 +131,15 @@ void init(project_t& p)
 #endif
 	//sine_bass.print_all_used(no_rt::mlog);
 
-	
-	protocol_t<m_ringbuffer_t>& proto = p.emplace<protocol_t<m_ringbuffer_t>>(false, 1_2);
+#if 1
+	protocol_t<m_ringbuffer_t>& proto = p.emplace<protocol_t<m_ringbuffer_t>>(false, 1_32);
 	
 	proto.input << sine_bass;
 	
 	*p.sink << proto; // << sine_bass; // TODO: allow that
+#else
+    *p.sink << sine_bass;
+#endif
 	sine_bass.print_tree();
 
 	// PEnable
