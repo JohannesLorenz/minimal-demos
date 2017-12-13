@@ -38,7 +38,6 @@ void init(project_t& p)
 	p.set_title("demo-song");
 
 	// instruments
-	// TODO: disallow "zynaddsubfx sine_base ...."
 	zynaddsubfx_t& sine_bass = p.emplace<zynaddsubfx_t>("sine bass");
 	audio_sink_t& sink = p.add_sink();
 
@@ -89,18 +88,18 @@ void init(project_t& p)
     nts << scale(1_4) << c%5 << c%5 << g%5 << g%5 << a%5 << a%5 << scale(1_2) << g%5
         << scale(1_4) << f%5 << f%5 << e%5 << e%5 << d%5 << d%5 << scale(1_2) << c%5; 
 	
-	nl.add_notes(nts, note_geom_t(0_1, 0));
+	nl.add_notes(nts, note_geom_t(0, 0));
 	
 	//std::cerr << "NOTELINE:" << std::endl << nl << std::endl;
 	nl.dump();
 
-//	lfo_t<int>& lfo_startup = p.emplace<lfo_t<int>>(0.0, 64.0, 100_1, 100_1, 0.5); // 1x 0 -> 64.0
-	lfo_t<int>& lfo_leftright = p.emplace<lfo_t<int>>(-64.0, 64.0, 0_1, 8_1, 8.); // 4x from 0 to 8
-	lfo_t<int>& lfo_volume = p.emplace<lfo_t<int>>(0, 85.0, 0_1, 4_1); // 1x 0 -> 85
+//	lfo_t<int>& lfo_startup = p.emplace<lfo_t<int>>(0.0, 64.0, 100, 100, 0.5); // 1x 0 -> 64.0
+	lfo_t<int>& lfo_leftright = p.emplace<lfo_t<int>>(-64.0, 64.0, 0, 8, 8.); // 4x from 0 to 8
+	lfo_t<int>& lfo_volume = p.emplace<lfo_t<int>>(0, 85.0, 0, 4); // 1x 0 -> 85
 	
-//	lfo_t<int>& constant_0 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, 0.0f);
-	lfo_t<int>& constant_1 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, 1.0f); // TODO: 100_1
-	lfo_t<int>& constant_m2 = p.emplace<lfo_t<int>>(0.0, 0.0, 100_1, 100_1, 1.0f, -2.0f);
+//	lfo_t<int>& constant_0 = p.emplace<lfo_t<int>>(0.0, 0.0, 100, 100, 1.0f, 0.0f);
+	lfo_t<int>& constant_1 = p.emplace<lfo_t<int>>(0.0, 0.0, 100, 100, 1.0f, 1.0f);
+	lfo_t<int>& constant_m2 = p.emplace<lfo_t<int>>(0.0, 0.0, 100, 100, 1.0f, -2.0f);
 
 //	in_port<int> ip(sine_bass);
 //	ip.connect(m_lfo->out);
